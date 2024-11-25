@@ -1,7 +1,11 @@
 package vn.edu.hust.studentman
 
 import StudentManager
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -63,6 +67,38 @@ class MainActivity : AppCompatActivity() {
       showAddStudentDialog()
     }
   }
+
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.option_menu, menu)
+    return true
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      R.id.action_add -> {
+        // Mở Activity để thêm sinh viên mới
+        val intent = Intent(this, AddStudentActivity::class.java)
+        startActivityForResult(intent, ADD_STUDENT_REQUEST)
+        true
+      }
+      else -> super.onOptionsItemSelected(item)
+    }
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    if (requestCode == ADD_STUDENT_REQUEST && resultCode == Activity.RESULT_OK) {
+      val newStudent = data?.getSerializableExtra("newStudent") as StudentModel
+      students.add(newStudent)
+      studentAdapter.notifyDataSetChanged()
+    }
+  }
+
+  companion object {
+    const val ADD_STUDENT_REQUEST = 1
+  }
+
 
   private fun showAddStudentDialog() {
 
